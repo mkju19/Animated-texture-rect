@@ -1,0 +1,2 @@
+# Animated texture rect
+ a
