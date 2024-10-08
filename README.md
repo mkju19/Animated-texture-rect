@@ -8,8 +8,8 @@ A simple addon that adds an animated version of the TextureRect node.
 2. Add an atlas texture that contains your sprite frames.
 3. Select the region of the atlas to fit the first frame of your animation.
    - If you have multiple animation that you want to switch between:
-   - Add them all to the alternate animations array.
-   - The first element in the array will be the default animation.
+     - Add them all to the alternate animations array.
+     - The first element in the array will be the default animation.
 4. If your frames are seperated by a few pixels you should set the texture seperation property to the number of pixels.
 5. The animation can then be started either by toggling auto start, or by calling play() on the AnimatedTextureRect node.
 
