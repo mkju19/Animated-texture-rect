@@ -36,9 +36,9 @@ var frame: int = 0:
 @export
 var alternate_animations: Array
 
-var animation_stopped: bool = false
-
 var is_playing: bool = false
+
+var _animation_stopped: bool = false
 
 var _current_animation_index: int
 		
@@ -89,16 +89,16 @@ func _process(delta: float) -> void:
 func play() -> void:
 	_timer.start()
 	is_playing = true
-	if (animation_stopped):
+	if (_animation_stopped):
 		frame = 0
-		animation_stopped= false
+		_animation_stopped= false
 
 
 func stop() -> void:
 	is_playing = false
 	_timer.stop()
 	animation_finished.emit()
-	animation_stopped = true
+	_animation_stopped = true
 
 
 func reset() -> void:
