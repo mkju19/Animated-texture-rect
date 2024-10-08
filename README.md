@@ -25,7 +25,7 @@ A simple addon that adds an animated version of the TextureRect node.
   - When the animation is started again it will start where it left off.
 - reset()
   - Will put the animation back to the first frame
-- change_animation(animation_index : int, texture_separation: int)
+- change_animation( animation_index : int, texture_separation : int )
   - Changes the animation to the given animation index if multiple animations has been added to the "Alternate Animations" array.
   - texture_separation is optional, but if not supplied it will be assumed to be 0.
 
