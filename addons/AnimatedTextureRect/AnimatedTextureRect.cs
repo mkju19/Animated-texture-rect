@@ -67,29 +67,37 @@ public partial class AnimatedTextureRect
     {
         Node = animatedTextureRectNode;
 
-        void af()
-        {
-            AnimationFinished?.Invoke();
-        }
-        Node.Connect("animation_finished", Callable.From(af));
+        Node.Connect(
+            "animation_finished",
+            Callable.From(() =>
+            {
+                AnimationFinished?.Invoke();
+            })
+        );
 
-        void al()
-        {
-            AnimationLooped?.Invoke();
-        }
-        Node.Connect("animation_looped", Callable.From(al));
+        Node.Connect(
+            "animation_looped",
+            Callable.From(() =>
+            {
+                AnimationLooped?.Invoke();
+            })
+        );
 
-        void fc()
-        {
-            FrameChanged?.Invoke();
-        }
-        Node.Connect("frame_changed", Callable.From(fc));
+        Node.Connect(
+            "frame_changed",
+            Callable.From(() =>
+            {
+                FrameChanged?.Invoke();
+            })
+        );
 
-        void ac()
-        {
-            AnimationChanged?.Invoke();
-        }
-        Node.Connect("animation_changed", Callable.From(ac));
+        Node.Connect(
+            "animation_changed",
+            Callable.From(() =>
+            {
+                AnimationChanged?.Invoke();
+            })
+        );
     }
 
     public static explicit operator AnimatedTextureRect(TextureRect node)
