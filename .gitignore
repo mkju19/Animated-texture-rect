@@ -14,5 +14,11 @@ project.godot
 .mono/
 data_*/
 mono_crash.*.json
+
+# Other
+
 animated_texture_rect.ico
 desktop.ini
+**/assets
+**/scenes
+animated_texture_rect_icon.png.import
