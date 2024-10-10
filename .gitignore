@@ -19,6 +19,6 @@ mono_crash.*.json
 
 animated_texture_rect.ico
 desktop.ini
-**/assets
-**/scenes
+assets/
+scenes/
 animated_texture_rect_icon.png.import
