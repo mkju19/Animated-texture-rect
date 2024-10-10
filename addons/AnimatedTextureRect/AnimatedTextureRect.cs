@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Godot;
 
 public partial class AnimatedTextureRect
@@ -35,6 +36,49 @@ public partial class AnimatedTextureRect
     {
         get { return (int)Node.Get("frame"); }
         set { Node.Set("frame", value); }
+    }
+
+    public List<AtlasTexture> AlternateAnimations
+    {
+        get
+        {
+            List<AtlasTexture> animationList = new();
+
+            var arr = (Godot.Collections.Array)Node.Get("alternate_animations");
+            foreach (var node in arr)
+            {
+                animationList.Add((AtlasTexture)node);
+            }
+            return animationList;
+        }
+        private set
+        {
+            throw new Exception();
+            // var nodes = new Godot.Collections.Array();
+            // foreach (var texture in value)
+            // {
+            //     nodes.Add(texture);
+            // }
+            // Node.Set("alternate_animations", nodes);
+        }
+    }
+
+    public bool IsPlaying
+    {
+        get { return (bool)Node.Get("is_playing"); }
+        private set { throw new Exception(); }
+    }
+
+    public int CurrentAnimationIndex
+    {
+        get { return (int)Node.Get("_current_animation_index"); }
+        private set { throw new Exception(); }
+    }
+
+    public int NumberOfFrames
+    {
+        get { return (int)Node.Get("_number_of_frames"); }
+        private set { throw new Exception(); }
     }
 
     public TextureRect Node { get; private set; }
