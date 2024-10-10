@@ -31,6 +31,12 @@ public partial class AnimatedTextureRect
         set { Node.Set("texture_seperation", value); }
     }
 
+    public int Frame
+    {
+        get { return (int)Node.Get("frame"); }
+        set { Node.Set("frame", value); }
+    }
+
     public TextureRect Node { get; private set; }
 
     public void Play()
