@@ -38,6 +38,11 @@ public partial class AnimatedTextureRect
         Node.Call("play");
     }
 
+    public void PlayBackwards()
+    {
+        Node.Call("play_backwards");
+    }
+
     public void Stop()
     {
         Node.Call("stop");

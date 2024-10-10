@@ -67,7 +67,6 @@ func _ready() -> void:
 		
 		_timer = Timer.new()
 		_timer.wait_time = 1/(fps as float)
-		_timer.timeout.connect(_next_frame)
 		_timer.one_shot = false
 		_timer.autostart = false
 		add_child(_timer)
@@ -87,14 +86,23 @@ func _process(delta: float) -> void:
 
 
 func play() -> void:
+	_timer.timeout.connect(_next_frame)
 	_timer.start()
 	is_playing = true
 	if (_animation_stopped):
 		frame = 0
 		_animation_stopped= false
 
+func play_backwards() -> void:
+	_timer.timeout.connect(_previous_frame)
+	_timer.start()
+	is_playing = true
+	if (_animation_stopped):
+		frame = _number_of_frames-1
+		_animation_stopped= false
 
 func stop() -> void:
+	_disconect_timer_signals()
 	is_playing = false
 	_timer.stop()
 	animation_finished.emit()
@@ -106,6 +114,7 @@ func reset() -> void:
 
 
 func pause() -> void:
+	_disconect_timer_signals()
 	is_playing = false
 	_timer.stop()
 
@@ -138,6 +147,11 @@ func change_animation(animation_index:int, new_texture_seperation: int = 0) -> v
 	animation_changed.emit()
 
 
+func _disconect_timer_signals() -> void:
+	for dict in _timer.timeout.get_connections():
+		_timer.timeout.disconnect(dict.callable)
+	
+	
 func _set_current_frame(frame_number: int) -> void:
 	frame_changed.emit()
 	
@@ -158,6 +172,17 @@ func _set_current_frame(frame_number: int) -> void:
 	_atlas_texture.region = Rect2(new_position, current_size)
 
 
+func _previous_frame() -> void:
+	if((frame - 1) >= 0):
+		frame -= 1
+	elif (!animation_looping):
+			stop()
+			return
+	else:
+		frame = _number_of_frames-1
+		animation_looped.emit()
+		
+		
 func _next_frame() -> void:
 	if((frame + 1) < _number_of_frames):
 		frame += 1
