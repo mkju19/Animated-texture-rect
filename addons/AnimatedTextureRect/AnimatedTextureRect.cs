@@ -69,25 +69,25 @@ public partial class AnimatedTextureRect
 
         void af()
         {
-            AnimationFinished();
+            AnimationFinished?.Invoke();
         }
         Node.Connect("animation_finished", Callable.From(af));
 
         void al()
         {
-            AnimationLooped();
+            AnimationLooped?.Invoke();
         }
         Node.Connect("animation_looped", Callable.From(al));
 
         void fc()
         {
-            FrameChanged();
+            FrameChanged?.Invoke();
         }
         Node.Connect("frame_changed", Callable.From(fc));
 
         void ac()
         {
-            AnimationChanged();
+            AnimationChanged?.Invoke();
         }
         Node.Connect("animation_changed", Callable.From(ac));
     }
