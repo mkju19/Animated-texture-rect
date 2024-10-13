@@ -10,7 +10,13 @@ signal animation_changed
 
  ## Frames per second. The speed of the animation.
 @export_range(0.1,1000000, 0.1)
-var fps: float = 10
+var fps: float = 10:
+	get:
+		return fps
+	set(value):
+		fps = value as float
+		if(!Engine.is_editor_hint() && is_node_ready()):
+			_timer.wait_time = 1/(value as float)
 
 ## Whether the animation should loop when finished
 @export
@@ -22,7 +28,7 @@ var auto_start: bool = false
 
 ## The number of pixels separating the frames in the atlas texture
 @export_range(0,10000)
-var texture_seperation: int = 0
+var texture_separation: int = 0
 
 ## The current frame of the animation
 @export_range(0, 100)
@@ -33,6 +39,7 @@ var frame: int = 0:
 		frame = value
 		_set_current_frame(value)
 
+## The list of available Atlas textures for animation
 @export
 var animation_list: Array
 
@@ -114,6 +121,7 @@ func stop() -> void:
 
 
 func reset() -> void:
+	pause()
 	frame = 0
 
 
@@ -140,12 +148,17 @@ func change_animation(animation_index:int, new_texture_seperation: int = 0) -> v
 		return
 		
 	_current_animation_index = animation_index
-	texture_seperation = new_texture_seperation
+	texture_separation = new_texture_seperation
 	
 	texture = animation_list[animation_index]
 	
 	_number_of_frames = _get_number_of_frames()
+	
 	frame = 0
+	if(auto_start):
+		play()
+	else:
+		pause()
 	
 	animation_changed.emit()
 
@@ -165,9 +178,9 @@ func _set_current_frame(frame_number: int) -> void:
 	var current_size: Vector2 = atlas_texture.region.size
 	var start_position: Vector2 = Vector2(0, current_position.y)
 	
-	var new_position = Vector2(start_position.x + (frame_number * (texture_width + texture_seperation)), current_position.y)
+	var new_position = Vector2(start_position.x + (frame_number * (texture_width + texture_separation)), current_position.y)
 	
-	_number_of_frames = _get_number_of_frames()
+	#_number_of_frames = _get_number_of_frames()
 	if (_is_outside_texture(new_position)):
 		push_error("Frame index " + str(frame_number) + " is outside the atlas texture.")
 		return
@@ -209,7 +222,7 @@ func _get_number_of_frames() -> int:
 	
 	while (!_is_outside_texture(position)):
 		frames += 1
-		position.x += texture_width + texture_seperation
+		position.x += texture_width + texture_separation
 		
 	return frames
 
@@ -217,4 +230,4 @@ func _get_number_of_frames() -> int:
 func _is_outside_texture(new_position : Vector2) -> bool:
 	var atlas_texture: AtlasTexture = texture as AtlasTexture
 	var texture_width: int = atlas_texture.get_width()
-	return new_position.x + texture_width + texture_seperation > atlas_texture.atlas.get_size().x 
+	return new_position.x + texture_width + texture_separation > atlas_texture.atlas.get_size().x 
