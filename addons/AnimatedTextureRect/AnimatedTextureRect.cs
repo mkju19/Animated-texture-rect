@@ -69,6 +69,18 @@ public partial class AnimatedTextureRect
         private set { throw new Exception(); }
     }
 
+    public bool IsPlayingForwards
+    {
+        get { return (bool)Node.Get("is_playing_forwards"); }
+        private set { throw new Exception(); }
+    }
+
+    public bool IsPlayingBackwards
+    {
+        get { return (bool)Node.Get("is_playing_backwards"); }
+        private set { throw new Exception(); }
+    }
+
     public int CurrentAnimationIndex
     {
         get { return (int)Node.Get("_current_animation_index"); }

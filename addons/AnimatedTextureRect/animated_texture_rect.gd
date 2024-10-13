@@ -38,15 +38,15 @@ var alternate_animations: Array
 
 var is_playing: bool = false
 
+var is_playing_forwards: bool = false
+
+var is_playing_backwards: bool = false
+
 var _animation_stopped: bool = false
 
 var _current_animation_index: int
 		
 var _number_of_frames
-
-var _texture_width: int
-
-var _atlas_texture: AtlasTexture
 
 var _timer: Timer
 
@@ -58,8 +58,8 @@ func _ready() -> void:
 	elif (Engine.is_editor_hint()):
 		return
 	else:
-		_atlas_texture = texture
-		_texture_width = _atlas_texture.get_width()
+		#_atlas_texture = texture
+		#_texture_width = _atlas_texture.get_width()
 		
 		_number_of_frames = _get_number_of_frames()
 
@@ -86,25 +86,27 @@ func _process(delta: float) -> void:
 
 
 func play() -> void:
+	pause()
 	_timer.timeout.connect(_next_frame)
 	_timer.start()
 	is_playing = true
+	is_playing_forwards = true
 	if (_animation_stopped):
 		frame = 0
 		_animation_stopped= false
 
 func play_backwards() -> void:
+	pause()
 	_timer.timeout.connect(_previous_frame)
 	_timer.start()
 	is_playing = true
+	is_playing_backwards = true
 	if (_animation_stopped):
 		frame = _number_of_frames-1
 		_animation_stopped= false
 
 func stop() -> void:
-	_disconect_timer_signals()
-	is_playing = false
-	_timer.stop()
+	pause()
 	animation_finished.emit()
 	_animation_stopped = true
 
@@ -116,6 +118,8 @@ func reset() -> void:
 func pause() -> void:
 	_disconect_timer_signals()
 	is_playing = false
+	is_playing_backwards = false
+	is_playing_forwards = false
 	_timer.stop()
 
 
@@ -137,9 +141,6 @@ func change_animation(animation_index:int, new_texture_seperation: int = 0) -> v
 	texture_seperation = new_texture_seperation
 	
 	texture = alternate_animations[animation_index]
-	_atlas_texture = texture as AtlasTexture
-	_atlas_texture.region.position = Vector2(0,0)
-	_texture_width = _atlas_texture.get_width()
 	
 	_number_of_frames = _get_number_of_frames()
 	frame = 0
@@ -155,21 +156,21 @@ func _disconect_timer_signals() -> void:
 func _set_current_frame(frame_number: int) -> void:
 	frame_changed.emit()
 	
-	_atlas_texture = texture
-	_texture_width = _atlas_texture.get_width()
+	var atlas_texture: AtlasTexture = texture as AtlasTexture
+	var texture_width: int = atlas_texture.get_width()
 	
-	var current_position: Vector2 = _atlas_texture.region.position
-	var current_size: Vector2 = _atlas_texture.region.size
+	var current_position: Vector2 = atlas_texture.region.position
+	var current_size: Vector2 = atlas_texture.region.size
 	var start_position: Vector2 = Vector2(0, current_position.y)
 	
-	var new_position = Vector2(start_position.x + (frame_number * (_texture_width + texture_seperation)), current_position.y)
+	var new_position = Vector2(start_position.x + (frame_number * (texture_width + texture_seperation)), current_position.y)
 	
 	_number_of_frames = _get_number_of_frames()
 	if (_is_outside_texture(new_position)):
 		push_error("Frame index " + str(frame_number) + " is outside the atlas texture.")
 		return
 	
-	_atlas_texture.region = Rect2(new_position, current_size)
+	atlas_texture.region = Rect2(new_position, current_size)
 
 
 func _previous_frame() -> void:
@@ -196,16 +197,22 @@ func _next_frame() -> void:
 
 func _get_number_of_frames() -> int:
 	var frames = 0
-	var current_position: Vector2 = _atlas_texture.region.position
-	var current_size: Vector2 = _atlas_texture.region.size
+	
+	var atlas_texture: AtlasTexture = texture as AtlasTexture
+	var texture_width: int = atlas_texture.get_width()
+	
+	var current_position: Vector2 = atlas_texture.region.position
+	var current_size: Vector2 = atlas_texture.region.size
 	var position: Vector2 = Vector2(0, current_position.y)
 	
 	while (!_is_outside_texture(position)):
 		frames += 1
-		position.x += _texture_width + texture_seperation
+		position.x += texture_width + texture_seperation
 		
 	return frames
 
 
 func _is_outside_texture(new_position : Vector2) -> bool:
-	return new_position.x + _texture_width + texture_seperation > _atlas_texture.atlas.get_size().x 
+	var atlas_texture: AtlasTexture = texture as AtlasTexture
+	var texture_width: int = atlas_texture.get_width()
+	return new_position.x + texture_width + texture_seperation > atlas_texture.atlas.get_size().x 
