@@ -14,9 +14,9 @@ var fps: float = 10:
 	get:
 		return fps
 	set(value):
-		fps = value as float
+		fps = value
 		if(!Engine.is_editor_hint() && is_node_ready()):
-			_timer.wait_time = 1/(value as float)
+			_timer.wait_time = 1/(value)
 
 ## Whether the animation should loop when finished
 @export
