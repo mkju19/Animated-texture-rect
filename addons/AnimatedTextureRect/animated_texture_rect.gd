@@ -34,7 +34,7 @@ var frame: int = 0:
 		_set_current_frame(value)
 
 @export
-var alternate_animations: Array
+var animation_list: Array
 
 var is_playing: bool = false
 
@@ -55,12 +55,12 @@ var _timer: Timer
 func _ready() -> void:
 	if (texture == null || texture.atlas == null):
 		texture = AtlasTexture.new()
+		animation_list = Array()
+		animation_list.append(texture)
+		pass
 	elif (Engine.is_editor_hint()):
 		return
 	else:
-		#_atlas_texture = texture
-		#_texture_width = _atlas_texture.get_width()
-		
 		_number_of_frames = _get_number_of_frames()
 
 		_current_animation_index = 0
@@ -76,13 +76,15 @@ func _ready() -> void:
 
 func _process(delta: float) -> void:
 	if (Engine.is_editor_hint()):
-		if (len(alternate_animations) > 0):
-			for i in range(0,len(alternate_animations)):
-				if (alternate_animations[i] == null):
-					alternate_animations[i] = AtlasTexture.new()
+		if (len(animation_list) <= 0):
+			animation_list.append(AtlasTexture.new())
+		else:
+			for i in range(0,len(animation_list)):
+				if (animation_list[i] == null):
+					animation_list[i] = AtlasTexture.new()
 					
-			if (alternate_animations[0].atlas != null):
-				texture = alternate_animations[0]	
+			if (animation_list[0].atlas != null):
+				texture = animation_list[0]	
 
 
 func play() -> void:
@@ -127,20 +129,20 @@ func change_animation(animation_index:int, new_texture_seperation: int = 0) -> v
 	if (animation_index < 0):
 		push_error("The animation index must not be a negative number")
 		return
-	if (len(alternate_animations) == 0):
+	if (len(animation_list) == 0):
 		push_error("Cannot change animation. The alternate_animations array is empty")
 		return
-	if(animation_index >= len(alternate_animations)):
+	if(animation_index >= len(animation_list)):
 		push_error("Animation index " + str(animation_index) + " is not in the alternate animations array")
 		return
 	
-	if(animation_index > len(alternate_animations) || animation_index < 0 || len(alternate_animations) == 0):
+	if(animation_index > len(animation_list) || animation_index < 0 || len(animation_list) == 0):
 		return
 		
 	_current_animation_index = animation_index
 	texture_seperation = new_texture_seperation
 	
-	texture = alternate_animations[animation_index]
+	texture = animation_list[animation_index]
 	
 	_number_of_frames = _get_number_of_frames()
 	frame = 0

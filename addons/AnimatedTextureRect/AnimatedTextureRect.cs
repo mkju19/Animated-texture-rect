@@ -38,29 +38,20 @@ public partial class AnimatedTextureRect
         set { Node.Set("frame", value); }
     }
 
-    public List<AtlasTexture> AlternateAnimations
+    public List<AtlasTexture> AnimationList
     {
         get
         {
             List<AtlasTexture> animationList = new();
 
-            var arr = (Godot.Collections.Array)Node.Get("alternate_animations");
+            var arr = (Godot.Collections.Array)Node.Get("animation_list");
             foreach (var node in arr)
             {
                 animationList.Add((AtlasTexture)node);
             }
             return animationList;
         }
-        private set
-        {
-            throw new Exception();
-            // var nodes = new Godot.Collections.Array();
-            // foreach (var texture in value)
-            // {
-            //     nodes.Add(texture);
-            // }
-            // Node.Set("alternate_animations", nodes);
-        }
+        private set { throw new Exception(); }
     }
 
     public bool IsPlaying
