@@ -17,6 +17,7 @@ mono_crash.*.json
 
 # Other
 
+.idea/
 animated_texture_rect.ico
 desktop.ini
 assets/
